@@ -17,7 +17,6 @@ repositories {
 }
 
 dependencies {
-    // Только PostgreSQL драйвер
     implementation 'org.postgresql:postgresql:42.6.0'
 }
 
