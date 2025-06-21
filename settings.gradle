@@ -1,2 +1,8 @@
-rootProject.name = 'sql'
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+		mavenCentral()
+	}
+}
 
+rootProject.name = 'sql'
