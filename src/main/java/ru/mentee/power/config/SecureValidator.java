@@ -1,6 +1,12 @@
 /* @MENTEE_POWER (C)2025 */
 package ru.mentee.power.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +14,31 @@ import ru.mentee.power.exception.SASTException;
 
 @Slf4j
 public class SecureValidator {
+
+    private static final String WEAK_PASSWORD_FILE = "config/weak-passwords.json";
     private static final Set<String> WEAK_PASSWORDS =
             Set.of("password", "123456", "admin", "qwerty", "welcome", "123123", "root", "letmein");
-
     private static final int MIN_PASSWORD_LENGTH = 12;
     private static final Set<String> SENSITIVE_KEYS =
             Set.of("db.password", "password", "secret", "credential", "token", "key");
-
     private final Properties properties;
+
+    private Set<String> loadWeakPasswordsFromFile() {
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(WEAK_PASSWORD_FILE)));
+            ObjectMapper mapper = new ObjectMapper();
+            Set<String> loadedPassword =
+                    mapper.readValue(content, new TypeReference<Set<String>>() {});
+            Set<String> combined = new HashSet<>(WEAK_PASSWORDS);
+            combined.addAll(loadedPassword);
+            log.info("Загружено {} слабых паролей из JSON", loadedPassword.size());
+            return combined;
+        } catch (IOException e) {
+            log.warn("Ошибка чтения слабых паролей из json", e);
+            return WEAK_PASSWORDS;
+        }
+    }
 
     public SecureValidator(Properties properties) {
         this.properties = properties;
@@ -53,7 +76,7 @@ public class SecureValidator {
             return;
         }
 
-        if (WEAK_PASSWORDS.contains(password.toLowerCase())) {
+        if (loadWeakPasswordsFromFile().contains(password.toLowerCase())) {
             throw new SASTException(
                     "Weak Password",
                     "Обнаружен слабый пароль: " + maskPassword(password),
@@ -71,8 +94,12 @@ public class SecureValidator {
     }
 
     private String maskPassword(String password) {
-        if (password == null || password.isEmpty()) return "";
-        if (password.length() <= 2) return "**";
+        if (password == null || password.isEmpty()) {
+            return "";
+        }
+        if (password.length() <= 2) {
+            return "**";
+        }
         return password.charAt(0) + "***" + password.charAt(password.length() - 1);
     }
 }

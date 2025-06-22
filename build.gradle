@@ -12,6 +12,7 @@ ext {
 			// Основные зависимости
 			postgresql        : '42.6.0',
 			lombok           : '1.18.30',
+			jackson           : '2.15.3', // Добавлена версия Jackson
 
 			// Логирование
 			slf4j            : '2.0.9',
@@ -44,6 +45,11 @@ dependencies {
 	testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
 	testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 
+	// Jackson (добавлены новые зависимости)
+	implementation "com.fasterxml.jackson.core:jackson-databind:2.15.3"
+	implementation "com.fasterxml.jackson.core:jackson-core:2.15.3"
+	implementation "com.fasterxml.jackson.core:jackson-annotations:2.15.3"
+
 	// Логирование
 	implementation "org.slf4j:slf4j-api:${versions.slf4j}"
 	implementation "ch.qos.logback:logback-classic:${versions.logback}"
@@ -67,7 +73,6 @@ spotless {
 		licenseHeader '/* @MENTEE_POWER (C)$YEAR */'
 	}
 }
-
 
 test {
 	useJUnitPlatform()
