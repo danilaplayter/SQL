@@ -10,6 +10,7 @@ CREATE
             updated_at TIMESTAMP DEFAULT NOW(),
             status VARCHAR(20) DEFAULT 'active'
         );
+
 -- 2. Таблица товаров
 CREATE
     TABLE
