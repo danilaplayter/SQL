@@ -1,17 +1,22 @@
-.gradle
+### Данные PostgreSQL ###
+docker/postgres-data/
+docker/pgadmin-data/
+
+### Gradle ###
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+*.log.gradle
 
-### IntelliJ IDEA ###
+### IDE ###
+.idea/
+*.iml
+*.iws
+*.ipr
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-*.iws
-*.iml
-*.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -38,9 +43,41 @@ bin/
 ### VS Code ###
 .vscode/
 
-### PostgreSQL Data ###
-docker/postgres-data/
-docker/pgadmin-data/
-
-### Mac OS ###
+### OS ###
 .DS_Store
+
+### Логи ###
+logs/
+*.log
+
+### Локальные конфигурации и секреты ###
+secrets.properties
+*.env
+/local.properties
+
+### Maven (если используется) ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+### Дополнительные игнорируемые файлы ###
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
+*.class
+
+### Системные файлы ###
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+### Прочие артефакты сборки ###
+**/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
