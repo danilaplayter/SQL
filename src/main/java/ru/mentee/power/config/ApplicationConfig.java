@@ -8,34 +8,33 @@ import lombok.extern.slf4j.Slf4j;
 import ru.mentee.power.exception.SASTException;
 
 @Slf4j
-public class ApplicationConfig implements DatabaseConfig, Overridable, Fileable {
-    public static final String APP_NAME = "app.name";
+public static final String APP_NAME = "app.name";
 
-    private final DatabaseConfig dbConfig;
-    private final Properties properties;
-    private final ru.mentee.power.config.SecureValidator validator;
+  private final DatabaseConfig dbConfig;
+  private final Properties properties;
+  private final ru.mentee.power.config.SecureValidator validator;
 
-    public ApplicationConfig(Properties properties, ConfigFilePath configFilePath)
-            throws IOException, SASTException {
-        this.dbConfig = new PostgresConfig(properties);
-        this.properties = properties;
-        this.validator = new ru.mentee.power.config.SecureValidator(properties);
-        load(configFilePath.getAppMainConfigPath());
-        validator.validate();
-        try {
-            load(configFilePath.getAppSecretPath());
-        } catch (IOException notFound) {
-            log.error(
-                    "Файл секретов {} не обнаружен, секреты будут загружены из ENV",
-                    configFilePath.getAppSecretPath(),
-                    notFound);
-        }
-        override();
+  public ApplicationConfig(Properties properties, ConfigFilePath configFilePath)
+      throws IOException, SASTException {
+    this.dbConfig = new PostgresConfig(properties);
+    this.properties = properties;
+    this.validator = new ru.mentee.power.config.SecureValidator(properties);
+    load(configFilePath.getAppMainConfigPath());
+    validator.validate();
+    try {
+      load(configFilePath.getAppSecretPath());
+    } catch (IOException notFound) {
+      log.error(
+          "Файл секретов {} не обнаружен, секреты будут загружены из ENV",
+          configFilePath.getAppSecretPath(),
+          notFound);
     }
+    override();
+  }
 
-    public String getApplicationName() {
-        return properties.getProperty(APP_NAME);
-    }
+  public String getApplicationName() {
+    return properties.getProperty(APP_NAME);
+  }
 
     public String getUrl() {
         return dbConfig.getUrl();
