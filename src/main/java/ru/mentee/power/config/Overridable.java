@@ -2,5 +2,5 @@
 package ru.mentee.power.config;
 
 public interface Overridable {
-  void override();
+    void override();
 }
