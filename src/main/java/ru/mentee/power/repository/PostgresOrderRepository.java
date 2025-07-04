@@ -20,23 +20,23 @@ import ru.mentee.power.exception.DataAccessException;
 public class PostgresOrderRepository implements OrderRepository {
 
     private static final String GET_USER_ANALYTICS_SQL =
-        "SELECT u.id AS user_id, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
-            + " total_spent, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total), 0) /"
-            + " COUNT(o.id) END AS avg_order_value FROM USERS u LEFT JOIN ORDERS o ON u.id ="
-            + " o.user_id GROUP BY u.id ORDER BY total_spent DESC";
+            "SELECT u.id AS user_id, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
+                + " total_spent, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total), 0) /"
+                + " COUNT(o.id) END AS avg_order_value FROM USERS u LEFT JOIN ORDERS o ON u.id ="
+                + " o.user_id GROUP BY u.id ORDER BY total_spent DESC";
 
     private static final String GET_TOP_CUSTOMERS_SQL =
-        "SELECT u.id AS user_id, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
-            + " total_spent, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total), 0) /"
-            + " COUNT(o.id) END AS avg_order_value FROM users u LEFT JOIN orders o ON u.id ="
-            + " o.user_id GROUP BY u.id ORDER BY total_spent DESC LIMIT ?";
+            "SELECT u.id AS user_id, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
+                + " total_spent, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total), 0) /"
+                + " COUNT(o.id) END AS avg_order_value FROM users u LEFT JOIN orders o ON u.id ="
+                + " o.user_id GROUP BY u.id ORDER BY total_spent DESC LIMIT ?";
 
     private static final String GET_MONTHLY_STATS_SQL =
-        "SELECT EXTRACT(YEAR FROM o.created_at) AS year, EXTRACT(MONTH FROM o.created_at) AS"
-            + " month, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
-            + " monthly_revenue, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total),"
-            + " 0) / COUNT(o.id) END AS avg_order_value FROM orders o GROUP BY year, month"
-            + " ORDER BY year DESC, month DESC";
+            "SELECT EXTRACT(YEAR FROM o.created_at) AS year, EXTRACT(MONTH FROM o.created_at) AS"
+                + " month, COUNT(o.id) AS orders_count, COALESCE(SUM(o.total), 0) AS"
+                + " monthly_revenue, CASE WHEN COUNT(o.id) = 0 THEN 0 ELSE COALESCE(SUM(o.total),"
+                + " 0) / COUNT(o.id) END AS avg_order_value FROM orders o GROUP BY year, month"
+                + " ORDER BY year DESC, month DESC";
 
     private final TestApplicationConfig testApplicationConfig;
 
@@ -49,8 +49,8 @@ public class PostgresOrderRepository implements OrderRepository {
     public List<OrderAnalytics> getUserAnalytics() throws DataAccessException {
         log.debug("Starting to fetch user analytics");
         try (Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_USER_ANALYTICS_SQL);
-            ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(GET_USER_ANALYTICS_SQL);
+                ResultSet resultSet = statement.executeQuery()) {
 
             List<OrderAnalytics> analytics = new ArrayList<>();
             while (resultSet.next()) {
@@ -68,7 +68,7 @@ public class PostgresOrderRepository implements OrderRepository {
     public List<OrderAnalytics> getTopCustomers(int limit) throws DataAccessException {
         log.debug("Starting to fetch top {} customers", limit);
         try (Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_TOP_CUSTOMERS_SQL)) {
+                PreparedStatement statement = connection.prepareStatement(GET_TOP_CUSTOMERS_SQL)) {
 
             statement.setInt(1, limit);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -76,8 +76,10 @@ public class PostgresOrderRepository implements OrderRepository {
                 while (resultSet.next()) {
                     topCustomers.add(mapToOrderAnalytics(resultSet));
                 }
-                log.info("Successfully fetched top {} customers, found {} records",
-                    limit, topCustomers.size());
+                log.info(
+                        "Successfully fetched top {} customers, found {} records",
+                        limit,
+                        topCustomers.size());
                 return topCustomers;
             }
         } catch (SQLException e) {
@@ -90,8 +92,8 @@ public class PostgresOrderRepository implements OrderRepository {
     public List<MonthlyOrderStats> getMonthlyOrderStats() throws DataAccessException {
         log.debug("Starting to fetch monthly order stats");
         try (Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_MONTHLY_STATS_SQL);
-            ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(GET_MONTHLY_STATS_SQL);
+                ResultSet resultSet = statement.executeQuery()) {
 
             List<MonthlyOrderStats> stats = new ArrayList<>();
             while (resultSet.next()) {
@@ -108,25 +110,25 @@ public class PostgresOrderRepository implements OrderRepository {
     private Connection getConnection() throws SQLException {
         log.debug("Getting database connection");
         return DriverManager.getConnection(
-            testApplicationConfig.getUrl(),
-            testApplicationConfig.getUsername(),
-            testApplicationConfig.getPassword());
+                testApplicationConfig.getUrl(),
+                testApplicationConfig.getUsername(),
+                testApplicationConfig.getPassword());
     }
 
     private OrderAnalytics mapToOrderAnalytics(ResultSet rs) throws SQLException {
         return new OrderAnalytics(
-            rs.getLong("user_id"),
-            rs.getInt("orders_count"),
-            rs.getBigDecimal("total_spent"),
-            rs.getBigDecimal("avg_order_value"));
+                rs.getLong("user_id"),
+                rs.getInt("orders_count"),
+                rs.getBigDecimal("total_spent"),
+                rs.getBigDecimal("avg_order_value"));
     }
 
     private MonthlyOrderStats mapToMonthlyOrderStats(ResultSet rs) throws SQLException {
         return new MonthlyOrderStats(
-            rs.getInt("year"),
-            rs.getInt("month"),
-            rs.getInt("orders_count"),
-            rs.getBigDecimal("monthly_revenue"),
-            rs.getBigDecimal("avg_order_value"));
+                rs.getInt("year"),
+                rs.getInt("month"),
+                rs.getInt("orders_count"),
+                rs.getBigDecimal("monthly_revenue"),
+                rs.getBigDecimal("avg_order_value"));
     }
 }
