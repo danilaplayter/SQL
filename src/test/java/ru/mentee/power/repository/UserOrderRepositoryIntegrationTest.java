@@ -34,7 +34,6 @@ class UserOrderRepositoryIntegrationTest extends BaseIntegrationTest {
     private void insertTestData() throws SQLException {
         try (Connection conn = getTestConnection()) {
             conn.setAutoCommit(false);
-
             // Вставка тестовых пользователей
             try (PreparedStatement ps =
                     conn.prepareStatement(
