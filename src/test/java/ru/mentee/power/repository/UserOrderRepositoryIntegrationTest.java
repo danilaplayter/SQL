@@ -47,7 +47,6 @@ class UserOrderRepositoryIntegrationTest extends BaseIntegrationTest {
                 ps.setString(2, "maria@test.com");
                 ps.executeUpdate();
             }
-
             // Вставка тестовых заказов
             try (PreparedStatement ps =
                     conn.prepareStatement(
