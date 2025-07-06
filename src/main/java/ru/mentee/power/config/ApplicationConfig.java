@@ -33,6 +33,12 @@ public class ApplicationConfig implements DatabaseConfig, Overridable, Fileable 
         override();
     }
 
+    public ApplicationConfig(Properties properties) throws SASTException, IOException {
+        this.dbConfig = new PostgresConfig(properties);
+        this.properties = properties;
+        this.validator = new SecureValidator(properties);
+    }
+
     public String getApplicationName() {
         return properties.getProperty(APP_NAME);
     }
