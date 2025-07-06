@@ -18,7 +18,7 @@ import ru.mentee.power.model.UserOrderSummary;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class UserOrderRepositoryImplIT {
+class PostgresUserOrderRepositoryIT {
 
     @Container
     private static final PostgreSQLContainer<?> postgres =
@@ -29,7 +29,7 @@ class UserOrderRepositoryImplIT {
 
     private static DataSource dataSource;
     private static Connection connection;
-    private UserOrderRepositoryImpl repository;
+    private PostgresUserOrderRepository repository;
 
     @BeforeAll
     static void initDatabase() throws SQLException {
@@ -44,7 +44,7 @@ class UserOrderRepositoryImplIT {
 
     @BeforeEach
     void setUp() {
-        repository = new UserOrderRepositoryImpl(dataSource);
+        repository = new PostgresUserOrderRepository(dataSource);
         clearTestData();
         insertTestData();
     }

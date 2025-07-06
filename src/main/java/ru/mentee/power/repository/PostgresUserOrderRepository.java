@@ -9,20 +9,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mentee.power.config.ApplicationConfig;
 import ru.mentee.power.exception.DataAccessException;
 import ru.mentee.power.model.ProductSalesInfo;
 import ru.mentee.power.model.UserOrderCount;
 import ru.mentee.power.model.UserOrderSummary;
 
-@AllArgsConstructor
 @Slf4j
-public class UserOrderRepositoryImpl implements UserOrderRepository {
+public class PostgresUserOrderRepository implements UserOrderRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserOrderRepositoryImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PostgresUserOrderRepository.class);
 
     private static final String FIND_USERS_WITH_TOTAL_ABOVE_SQL =
             """
@@ -71,6 +71,23 @@ public class UserOrderRepositoryImpl implements UserOrderRepository {
     """;
 
     private final DataSource dataSource;
+
+    public PostgresUserOrderRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+        log.info("PostgresUserOrderRepository initialized with DataSource: {}", dataSource);
+    }
+
+    public PostgresUserOrderRepository(ApplicationConfig config) {
+        this(createDataSource(config));
+    }
+
+    private static DataSource createDataSource(ApplicationConfig config) {
+        PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setUrl(config.getUrl());
+        ds.setUser(config.getUsername());
+        ds.setPassword(config.getPassword());
+        return ds;
+    }
 
     @Override
     public List<UserOrderSummary> findUsersWithTotalAbove(BigDecimal minTotal)
