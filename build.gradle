@@ -58,7 +58,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
 
-    // Обновленные зависимости JAXB
+    // JAXB
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:${versions.jaxbApi}"
     implementation "org.glassfish.jaxb:jaxb-runtime:${versions.jaxbRuntime}"
 
@@ -72,6 +72,15 @@ dependencies {
     testImplementation "org.testcontainers:testcontainers:${versions.testcontainers}"
     testImplementation "org.testcontainers:junit-jupiter:${versions.testcontainers}"
     testImplementation "org.testcontainers:postgresql:${versions.testcontainers}"
+
+    // Spring core и spring-context (если не Spring Boot)
+    implementation 'org.springframework:spring-context:6.1.4'
+
+    // Spring JDBC (нужен для DataSource, JdbcTemplate, @Sql и @Transactional)
+    implementation 'org.springframework:spring-jdbc:6.1.4'
+
+    // Spring Test (для @Sql, @Transactional, @SpringBootTest и пр.)
+    testImplementation 'org.springframework:spring-test:6.1.4'
 }
 
 // Остальная конфигурация (checkstyle, test, jacoco, spotless) остается без изменений
